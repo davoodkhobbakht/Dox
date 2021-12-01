@@ -13,13 +13,18 @@ class User(AbstractUser):
 
         ("F", "Female"),
     )
+    ROLE_CHOICES = (
+        ("A", "Admin"),
+
+        ("R", "Regular"),
+    )
     phone_regex = RegexValidator(
         regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
     phone_number = models.CharField(
         validators=[phone_regex], max_length=17, blank=False, null=False)
     address = models.CharField(max_length=300)
-    cart = models.ExpressionList
-    role = models.CharField()
+    cart = models.CharField(max_length=10)
+    role = models.CharField(choices=ROLE_CHOICES, max_length=10)
     id_number = models.PositiveIntegerField(blank=True, null=True)
     birth_date = models.DateField(blank=True, null=True)
-    gender = models.CharField(choices=GENDER_CHOICES)
+    gender = models.CharField(choices=GENDER_CHOICES,  max_length=10)
