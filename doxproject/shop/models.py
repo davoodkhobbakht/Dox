@@ -26,18 +26,21 @@ class Product(models.Model):
     description = models.CharField(max_length = 350)
     available_number = models.models.PositiveIntegerField(Default = 0 ,blank = False, null = False)
     is_available = models.CharField(default= False)
-    product_code =  models.CharField(max_length=12,blank=True)
+    product_code =  models.CharField(unique=True, max_length=12,blank=True)
     category = models.CharField(max_length=30,blank=True)
     color = models.CharField(max_length=10,blank=True,default='#FFFFF')
     rate = models.CharField(choices= RATE_CHOICES)
     
-    def code_generate():
+    def code_generate():# generate an uuid4 code for product_code
         code = str( uuid4()).replace('-','')[:12]
         return code
-    def __str__(self) -> str:
+    def __str__(self) -> str:#return a string that represents each object
         return f"{self.name}-{self.product_code}-{self.price}"
     def save(self, *args , **kwargs):
-        if self.product_code == "":
-            code = self.code_generate()
-            self.product_code = code
-        super().save(*args,**kwargs) 
+        try: #create product code
+            if self.product_code == "":
+                code = self.code_generate()
+                self.product_code = code
+            super().save(*args,**kwargs) 
+        except:
+            self.save() #create another code
